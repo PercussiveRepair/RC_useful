@@ -15,6 +15,7 @@ shopt -s histappend
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
+HISTTIMEFORMAT="%F %T "
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -82,6 +83,17 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
+#history grep alias
+alias ghist='history | grep'
+
+#git status alias
+alias ggs='git status'
+alias gga='git add'
+alias ggpl='git pull'
+alias ggps='git push'
+alias ggct='git commit'
+alias ggcl='git clone'
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -101,3 +113,11 @@ fi
 # Handy Salt Aliases
 alias saltjobs='salt-run jobs.list_jobs'
 alias saltjob='salt-run jobs.lookup_jid'
+
+export EDITOR=vim
+
+#SSH Config Tab Completion
+function _ssh_completion() {
+perl -ne 'print "$1 " if /^Host (.+)$/' ~/.ssh/config
+}
+complete -W "$(_ssh_completion)" ssh
