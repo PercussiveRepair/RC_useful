@@ -7,14 +7,17 @@
 
 # don't put duplicate lines in the history. See bash(1) for more options
 # ... or force ignoredups and ignorespace
-HISTCONTROL=ignoredups:ignorespace
+HISTCONTROL=ignoredups:ignorespace:erasedups
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
+# After each command, append to the history file
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a;"
+
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=10000
+HISTFILESIZE=200000
 HISTTIMEFORMAT="%F %T "
 
 # check the window size after each command and, if necessary,
@@ -60,6 +63,7 @@ else
 fi
 unset color_prompt force_color_prompt
 
+
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
@@ -96,6 +100,8 @@ alias ggpl='git pull'
 alias ggps='git push'
 alias ggct='git commit'
 alias ggcl='git clone'
+alias ggck='git checkout'
+alias ggb='git branch'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -112,10 +118,6 @@ fi
 #if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 #    . /etc/bash_completion
 #fi
-
-# Handy Salt Aliases
-alias saltjobs='salt-run jobs.list_jobs'
-alias saltjob='salt-run jobs.lookup_jid'
 
 export EDITOR=vim
 
