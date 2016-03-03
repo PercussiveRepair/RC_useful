@@ -140,7 +140,8 @@ perl -ne 'print "$1 " if /^Host (.+)$/' ~/.ssh/config
 }
 complete -W "$(_ssh_completion)" ssh
 
-#aws cli autocompleter
+#aws cli autocompleter 
+#see: http://docs.aws.amazon.com/cli/latest/userguide/cli-command-completion.html
 complete -C '/usr/local/bin/aws_completer' aws
 export PATH=/usr/local/aws/bin:$PATH
 
