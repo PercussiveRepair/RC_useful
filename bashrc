@@ -38,7 +38,7 @@ case "$TERM" in
     xterm-color) color_prompt=yes;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; 
+# uncomment for a colored prompt, if the terminal has the capability;
 force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
@@ -57,9 +57,10 @@ source ~/.git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE="yes"
 export GIT_PS1_SHOWUNTRACKEDFILES="yes"
 export GIT_PS1_SHOWCOLORHINTS="yes"
+export GIT_PS1_SHOWUPSTREAM="auto"
 
 if [ "$color_prompt" = yes ]; then
-    PS1='\t|\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[38;5;11m\]$(__git_ps1 "(%s)") \[\033[0m\]\\$ '
+    PS1='\t|\[\033[0;35m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[38;5;11m\]$(__git_ps1 "(%s)") \[\033[0m\]\\$ '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -74,7 +75,34 @@ xterm*|rxvt*)
     ;;
 esac
 
-PS1="\[\033[G\]$PS1"
+# PS1="\[\033[G\]$PS1"
+
+# Virtual ENV stuff
+add_venv_info () {
+    if [ -z "$VIRTUAL_ENV_DISABLE_PROMPT" ] ; then
+        VIRT_ENV_TXT=""
+        if [ "x" != x ] ; then
+            VIRT_ENV_TXT=""
+        else
+            if [ "`basename \"$VIRTUAL_ENV\"`" = "__" ] ; then
+                # special case for Aspen magic directories
+                # see http://www.zetadev.com/software/aspen/
+                VIRT_ENV_TXT="[`basename \`dirname \"$VIRTUAL_ENV\"\``]"
+            elif [ "$VIRTUAL_ENV" != "" ]; then
+                VIRT_ENV_TXT="(`basename \"$VIRTUAL_ENV\"`)"
+            fi
+        fi
+        if [ "${VIRT_ENV_TXT}" != "" ]; then
+           echo ${VIRT_ENV_TXT}" "
+        fi
+    fi
+}
+
+# Now we construct the prompt.
+# in my case a bunch of lines constructing the complete PS1
+# somewhere call the add_venv_info function like below
+
+        PS1="\[$(add_venv_info)\]"${PS1}
 
 
 ## COLOURS AND ALIASES ##
@@ -100,7 +128,7 @@ alias l='ls -CFG'
 alias ghist='history | grep'
 
 #git status alias
-alias ggs='git status --short'
+alias ggs='git status -sb'
 alias gga='git add'
 alias ggpl='git pull'
 alias ggps='git push'
@@ -109,6 +137,22 @@ alias ggcl='git clone'
 alias ggck='git checkout'
 alias ggb='git branch'
 alias ggdm='git diff origin/master..HEAD'
+alias ggr='git checkout --'
+alias ggresetall='git clean -df && git checkout -- .'
+alias ggcleanbranches='git checkout master && git branch --merged master | grep -v "\* master" | xargs -n 1 -p git branch -d'
+
+#mac iterm only - open new tab at same location
+alias newtab='open . -a iterm'
+
+#gpg fingerprint output (mac sed)
+alias gpgfing="gpg --fingerprint | grep -A1 fing | sed -e '/^--$/d' -e 's/Key fingerprint =//g' -e 's/ *//g' -e ':a' -e 'N' -e 's/\nuid/ \# /g' | tr -s '  '"
+
+#gpg view recipients
+alias gpgrecipients="gpg --list-only --no-default-keyring --secret-keyring /dev/null"
+
+#eyaml
+alias eyamlstring='eyaml encrypt -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients -s'
+alias eyamledit='eyaml edit -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -140,14 +184,22 @@ perl -ne 'print "$1 " if /^Host (.+)$/' ~/.ssh/config
 }
 complete -W "$(_ssh_completion)" ssh
 
-#aws cli autocompleter 
-#see: http://docs.aws.amazon.com/cli/latest/userguide/cli-command-completion.html
+#aws cli autocompleter
 complete -C '/usr/local/bin/aws_completer' aws
 export PATH=/usr/local/aws/bin:$PATH
+
+# git completion from https://github.com/git/git/blob/master/contrib/completion
+if [ -f ~/.git-completion.bash ]; then
+    . ~/.git-completion.bash
+fi
 
 
 ## MISC ##
 export EDITOR=vim
+export PACKER=$(which packer)
+
+# add scripts to path
+export PATH=$PATH:/Users/jayharrison/scripts
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
