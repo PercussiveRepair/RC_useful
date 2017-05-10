@@ -19,7 +19,7 @@ export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a;"
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=500000
-HISTFILESIZE=200000
+HISTFILESIZE=2000000
 HISTTIMEFORMAT="%F %T "
 
 # Don't record some commands
@@ -102,7 +102,7 @@ add_venv_info () {
 # in my case a bunch of lines constructing the complete PS1
 # somewhere call the add_venv_info function like below
 
-        PS1="\[$(add_venv_info)\]"${PS1}
+PS1="\[$(add_venv_info)\]"${PS1}
 
 
 ## COLOURS AND ALIASES ##
@@ -140,6 +140,8 @@ alias ggdm='git diff origin/master..HEAD'
 alias ggr='git checkout --'
 alias ggresetall='git clean -df && git checkout -- .'
 alias ggcleanbranches='git checkout master && git branch --merged master | grep -v "\* master" | xargs -n 1 -p git branch -d'
+alias ggt='git tag'
+alias ggtps='git tag push origin'
 
 #mac iterm only - open new tab at same location
 alias newtab='open . -a iterm'
@@ -153,6 +155,9 @@ alias gpgrecipients="gpg --list-only --no-default-keyring --secret-keyring /dev/
 #eyaml
 alias eyamlstring='eyaml encrypt -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients -s'
 alias eyamledit='eyaml edit -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients'
+
+#keepass cli tool
+alias kp="cd ~/repos/ops-secrets/ && ggck master && ggpl && cd - && kpcli --kdb=repos/ops-secrets/passwords/bgch-ops.kdb"
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
