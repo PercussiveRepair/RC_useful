@@ -142,6 +142,7 @@ alias ggresetall='git clean -df && git checkout -- .'
 alias ggcleanbranches='git checkout master && git branch --merged master | grep -v "\* master" | xargs -n 1 -p git branch -d'
 alias ggt='git tag'
 alias ggtps='git tag push origin'
+alias ggpsu='git push --set-upstream origin `git symbolic-ref --short HEAD`'
 
 #mac iterm only - open new tab at same location
 alias newtab='open . -a iterm'
@@ -155,9 +156,6 @@ alias gpgrecipients="gpg --list-only --no-default-keyring --secret-keyring /dev/
 #eyaml
 alias eyamlstring='eyaml encrypt -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients -s'
 alias eyamledit='eyaml edit -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients'
-
-#keepass cli tool
-alias kp="cd ~/repos/ops-secrets/ && ggck master && ggpl && cd - && kpcli --kdb=repos/ops-secrets/passwords/bgch-ops.kdb"
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
