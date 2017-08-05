@@ -45,10 +45,10 @@ autocmd BufReadPost *
 set viminfo^=%
 
 " Status line
-" set statusline=\ %F                                   " Full path & file
-" set statusline+=\ %r%y[%{&ff}]                        " RO flag, filetype & file format (dos,unix etc)
-" set statusline+=[%{strlen(&fenc)?&fenc:'none'}]       " Encoding
-" set statusline+=%=                                    " right align
-" set statusline+=Line[%l/%L]                           " Line of lines
-" set statusline+=\ Col[%v]                             " Column
-" set statusline+=\ \|\ %{strftime(\"%Y%m%d\-%H:%M\")}  " Date & time
+set statusline=\ %F                                   " Full path & file
+set statusline+=\ %r%y[%{&ff}]                        " RO flag, filetype & file format (dos,unix etc)
+set statusline+=[%{strlen(&fenc)?&fenc:'none'}]       " Encoding
+set statusline+=%=                                    " right align
+set statusline+=Line[%l/%L]                           " Line of lines
+set statusline+=\ Col[%v]                             " Column
+set statusline+=\ \|\ %{strftime(\"%Y%m%d\-%H:%M\")}  " Date & time
