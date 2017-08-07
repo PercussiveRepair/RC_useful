@@ -131,7 +131,7 @@ alias ghist='history | grep'
 alias ggs='git status -sb'
 alias gga='git add'
 alias ggpl='git pull'
-alias ggps='git push'
+alias ggps='git pull && git push'
 alias ggct='git commit'
 alias ggcl='git clone'
 alias ggck='git checkout'
@@ -143,6 +143,8 @@ alias ggcleanbranches='git checkout master && git branch --merged master | grep 
 alias ggt='git tag'
 alias ggtps='git tag push origin'
 alias ggpsu='git push --set-upstream origin `git symbolic-ref --short HEAD`'
+alias ggfetchandclean='git fetch -p' #After fetching, remove any remote-tracking references that no longer exist on the remote
+alias ggrb='git rebase -i $(git merge-base master $(git rev-parse --abbrev-ref HEAD))' #Interactively rebases back from HEAD to the point a branch was made
 
 #mac iterm only - open new tab at same location
 alias newtab='open . -a iterm'
