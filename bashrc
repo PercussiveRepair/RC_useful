@@ -127,7 +127,7 @@ alias l='ls -CFG'
 #history grep alias
 alias ghist='history | grep'
 
-#git status alias
+#git alias list
 alias ggs='git status -sb'
 alias gga='git add'
 alias ggpl='git pull'
@@ -139,25 +139,40 @@ alias ggb='git branch'
 alias ggdm='git diff origin/master..HEAD'
 alias ggr='git checkout --'
 alias ggresetall='git clean -df && git checkout -- .'
-alias ggcleanbranches='git checkout master && git branch --merged master | grep -v "\* master" | xargs -n 1 -p git branch -d'
+alias ggcleanbranches='git checkout master; git branch --merged master | grep -v "\* master" | xargs -n 1 -p git branch -d'
 alias ggt='git tag'
-alias ggtps='git tag push origin'
 alias ggpsu='git push --set-upstream origin `git symbolic-ref --short HEAD`'
 alias ggfetchandclean='git fetch -p' #After fetching, remove any remote-tracking references that no longer exist on the remote
 alias ggrb='git rebase -i $(git merge-base master $(git rev-parse --abbrev-ref HEAD))' #Interactively rebases back from HEAD to the point a branch was made
+alias gglg='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
 #mac iterm only - open new tab at same location
 alias newtab='open . -a iterm'
 
-#gpg fingerprint output (mac sed)
+#gpg alias list
 alias gpgfing="gpg --fingerprint | grep -A1 fing | sed -e '/^--$/d' -e 's/Key fingerprint =//g' -e 's/ *//g' -e ':a' -e 'N' -e 's/\nuid/ \# /g' | tr -s '  '"
-
 #gpg view recipients
 alias gpgrecipients="gpg --list-only --no-default-keyring --secret-keyring /dev/null"
+#gpg trust all installed keys
+alias gpgtrustall='for fprint in $(gpg --list-public-keys --fingerprint --with-colons |grep fpr|cut -d: -f10); do echo "$fprint:6:" | gpg --import-ownertrust; done'
+alias gpgi='gpg --import'
+alias gpgdel='gpg --delete-keys'
 
 #eyaml
 alias eyamlstring='eyaml encrypt -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients -s'
 alias eyamledit='eyaml edit -n gpg --gpg-always-trust --gpg-recipients-file hieradata/recipients/all.recipients'
+
+#aws accounts list
+alias listaccounts="aws --profile awsbillingmaster organizations list-accounts | jq --raw-output '.[] |.[] | select(.Status == \"ACTIVE\")| [.Id,.Name] | @tsv' | sort -k2"
+
+#location slack status
+#176.12 & https://api.statushook.cool/v1/prod/webhook/fire?id=67dbdf92-21da-11e8-8257-0631ec267cdb chiltern train wifi
+#89.197.133 & https://api.statushook.cool/v1/prod/webhook/fire?id=129b743c-2123-11e8-b467-b66e486d91a6 Aldwych house
+#82.16.134.66 & https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e Home
+alias slackstatus='LOCATIONIP=$(curl -s icanhazip.com) && if echo $LOCATIONIP | grep -q "176.12" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=67dbdf92-21da-11e8-8257-0631ec267cdb; elif echo $LOCATIONIP | grep -q "89.197.133" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=129b743c-2123-11e8-b467-b66e486d91a6; elif echo $LOCATIONIP | grep -q "82.16.134.66" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e; fi'
+
+#chaim alias list
+alias cg="chaim --gui"
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -198,13 +213,19 @@ if [ -f ~/.git-completion.bash ]; then
     . ~/.git-completion.bash
 fi
 
+#chaim --gui AWS Config Tab Completion
+function _chaim_completion() {
+perl -ne 'print "$1 " if /^\[(.+)\]$/' ~/.aws/credentials
+}
+complete -W "$(_chaim_completion)" cg
+
 
 ## MISC ##
 export EDITOR=vim
 export PACKER=$(which packer)
 
 # add scripts to path
-export PATH=$PATH:/Users/jayharrison/scripts
+export PATH=$PATH:/Users/jayharrison/repos/scripts:/Users/jayharrison/repos/opsscripts/admin-scripts
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -212,3 +233,10 @@ shopt -s checkwinsize
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+
+# added by travis gem
+[ -f /Users/jayharrison/.travis/travis.sh ] && source /Users/jayharrison/.travis/travis.sh
+export PATH=$PATH:/Users/jayharrison/repos/opsbag/.bin
+export C2HBAG_ROOT=/Users/jayharrison/repos/opsbag
+export PATH=$PATH:/opt/bgch/chaim
