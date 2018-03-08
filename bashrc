@@ -168,8 +168,8 @@ alias listaccounts="aws --profile awsbillingmaster organizations list-accounts |
 #location slack status
 #176.12 & https://api.statushook.cool/v1/prod/webhook/fire?id=67dbdf92-21da-11e8-8257-0631ec267cdb chiltern train wifi
 #89.197.133 & https://api.statushook.cool/v1/prod/webhook/fire?id=129b743c-2123-11e8-b467-b66e486d91a6 Aldwych house
-#82.16.134.66 & https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e Home
-alias slackstatus='LOCATIONIP=$(curl -s icanhazip.com) && if echo $LOCATIONIP | grep -q "176.12" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=67dbdf92-21da-11e8-8257-0631ec267cdb; elif echo $LOCATIONIP | grep -q "89.197.133" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=129b743c-2123-11e8-b467-b66e486d91a6; elif echo $LOCATIONIP | grep -q "82.16.134.66" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e; fi'
+#82.16 & https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e Home
+alias slackstatus='LOCATIONIP=$(curl -s icanhazip.com) && if echo $LOCATIONIP | grep -q "176.12" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=67dbdf92-21da-11e8-8257-0631ec267cdb; elif echo $LOCATIONIP | grep -q "89.197.133" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=129b743c-2123-11e8-b467-b66e486d91a6; elif echo $LOCATIONIP | grep -q "82.16" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e; fi'
 
 #chaim alias list
 alias cg="chaim --gui"
