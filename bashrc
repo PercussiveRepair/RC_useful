@@ -166,10 +166,22 @@ alias eyamledit='eyaml edit -n gpg --gpg-always-trust --gpg-recipients-file hier
 alias listaccounts="aws --profile awsbillingmaster organizations list-accounts | jq --raw-output '.[] |.[] | select(.Status == \"ACTIVE\")| [.Id,.Name] | @tsv' | sort -k2"
 
 #location slack status
-#176.12 & https://api.statushook.cool/v1/prod/webhook/fire?id=67dbdf92-21da-11e8-8257-0631ec267cdb chiltern train wifi
-#89.197.133 & https://api.statushook.cool/v1/prod/webhook/fire?id=129b743c-2123-11e8-b467-b66e486d91a6 Aldwych house
-#82.16 & https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e Home
-alias slackstatus='LOCATIONIP=$(curl -s icanhazip.com) && if echo $LOCATIONIP | grep -q "176.12" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=67dbdf92-21da-11e8-8257-0631ec267cdb; elif echo $LOCATIONIP | grep -q "89.197.133" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=129b743c-2123-11e8-b467-b66e486d91a6; elif echo $LOCATIONIP | grep -q "82.16" ; then curl -X POST https://api.statushook.cool/v1/prod/webhook/fire?id=6506590c-f528-11e7-99b5-262d7c07d25e; fi'
+slackstatus () {
+  LOCATIONIP=$(curl -s icanhazip.com)
+  TOKEN=$(cat ~/.ssh/slacktoken)
+  TRAINSTATUS="%7B%0D%0A%20%20%20%20%22status_text%22%3A%20%22on%20the%20train%22%2C%0D%0A%20%20%20%20%22status_emoji%22%3A%20%22%3Apizzatrain%3A%22%0D%0A%7D" #176.12
+  ALDWYCHSTATUS="%7B%0D%0A%20%20%20%20%22status_text%22%3A%20%22Aldwych%20House%22%2C%0D%0A%20%20%20%20%22status_emoji%22%3A%20%22%3Abank%3A%22%0D%0A%7D" #89.197.133
+  HOMESTATUS="%7B%0D%0A%20%20%20%20%22status_text%22%3A%20%22WFH%22%2C%0D%0A%20%20%20%20%22status_emoji%22%3A%20%22%3Achildren_crossing%3A%22%0D%0A%7D" #82.16.134.66
+  BLANKSTATUS="%7B%0D%0A%20%20%20%20%22status_text%22%3A%20%22%22%2C%0D%0A%20%20%20%20%22status_emoji%22%3A%20%22%22%0D%0A%7D"
+  if echo $LOCATIONIP | grep -q "176.12"; then
+    curl -H "Authorization: Bearer $TOKEN" -X POST https://slack.com/api/users.profile.set?profile=$TRAINSTATUS
+  elif echo $LOCATIONIP | grep -q "89.197.133"; then
+    curl -H "Authorization: Bearer $TOKEN" -X POST https://slack.com/api/users.profile.set?profile=$ALDWYCHSTATUS
+  elif echo $LOCATIONIP | grep -q "82.16.134.66"; then
+    curl -H "Authorization: Bearer $TOKEN" -X POST https://slack.com/api/users.profile.set?profile=$HOMESTATUS
+  else curl -H "Authorization: Bearer $TOKEN" -X POST https://slack.com/api/users.profile.set?profile=$BLANKSTATUS
+  fi
+}
 
 #chaim alias list
 alias cg="chaim --gui"
