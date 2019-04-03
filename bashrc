@@ -25,6 +25,9 @@ HISTTIMEFORMAT="%F %T "
 # Don't record some commands
 export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history"
 
+# efficient history jump - up/down only find history entries with same fragment
+bind '"\e[A":history-search-backward'
+bind '"\e[B":history-search-forward'
 
 ## PROMPT STUFF ##
 
@@ -119,10 +122,12 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
+# general aliases
 alias ll='ls -aGlF'
 alias la='ls -AG'
 alias l='ls -CFG'
+alias cl="clear"
+alias ..="cd .."
 
 #history grep alias
 alias ghist='history | grep'
@@ -131,20 +136,24 @@ alias ghist='history | grep'
 alias ggs='git status -sb'
 alias gga='git add'
 alias ggpl='git pull'
-alias ggps='git pull && git push'
+alias ggplps='git pull && git push'
+alias ggps='git push'
 alias ggct='git commit'
 alias ggcl='git clone'
 alias ggck='git checkout'
 alias ggb='git branch'
 alias ggdm='git diff origin/master..HEAD'
+alias gglsdiff='git diff --name-only `git symbolic-ref --short HEAD` master'
 alias ggr='git checkout --'
 alias ggresetall='git clean -df && git checkout -- .'
-alias ggcleanbranches='git checkout master; git branch --merged master | grep -v "\* master" | xargs -n 1 -p git branch -d'
+#alias ggcleanbranches='git checkout master; git branch --merged master | grep -v "\* master" | xargs -n 1 -p git branch -d'
+alias ggcleanbranches="git checkout master && git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D"
 alias ggt='git tag'
 alias ggpsu='git push --set-upstream origin `git symbolic-ref --short HEAD`'
 alias ggfetchandclean='git fetch -p' #After fetching, remove any remote-tracking references that no longer exist on the remote
 alias ggrb='git rebase -i $(git merge-base master $(git rev-parse --abbrev-ref HEAD))' #Interactively rebases back from HEAD to the point a branch was made
 alias gglg='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
+alias ggfetchall='git fetch -vp'
 
 #mac iterm only - open new tab at same location
 alias newtab='open . -a iterm'
@@ -164,6 +173,9 @@ alias eyamledit='eyaml edit -n gpg --gpg-always-trust --gpg-recipients-file hier
 
 #aws accounts list
 alias listaccounts="aws --profile awsbillingmaster organizations list-accounts | jq --raw-output '.[] |.[] | select(.Status == \"ACTIVE\")| [.Id,.Name] | @tsv' | sort -k2"
+
+# xkcd pw gen
+alias xkcdpw="curl -s https://raw.githubusercontent.com/PercussiveRepair/google-10000-english/master/google-10000-english-usa-no-swears-medium.txt | sort -R | tail -n 4 | tr -d '\n' | tr 'o' '0'; echo"
 
 #location slack status
 slackstatus () {
@@ -224,13 +236,6 @@ export PATH=/usr/local/aws/bin:$PATH
 if [ -f ~/.git-completion.bash ]; then
     . ~/.git-completion.bash
 fi
-
-#chaim --gui AWS Config Tab Completion
-function _chaim_completion() {
-perl -ne 'print "$1 " if /^\[(.+)\]$/' ~/.aws/credentials
-}
-complete -W "$(_chaim_completion)" cg
-
 
 ## MISC ##
 export EDITOR=vim
